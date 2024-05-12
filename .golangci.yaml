@@ -1,0 +1,49 @@
+# See https://golangci-lint.run/usage/configuration/
+run:
+  tests: true # Include test files
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  cyclop:
+    max-complexity: 10
+  revive:
+    severity: error # if it is not an error we care a little (but not enough to fix it)
+
+linters:
+  disable-all: true
+  enable:
+    - errname         # checks that sentinel errors are prefixed
+    - errcheck        # checks for unchecked errors
+    - gci             # check if package import order are deterministic
+    - gofumpt         # checks whether code was gofumpt-ed
+    - govet           # checks and reports suspicious constructs
+    - goconst         # finds repeated strings that could be replaced by a constant
+    - gosimple        # helps simplifying code
+    - staticcheck     # static analysis, detecting bugs, performance issues, etc.
+    - ineffassign     # checks for unused assignments to existing variables
+    - interfacebloat  # checks the number of methods inside an interface
+    - noctx           # checks for sending http request without context.Context
+    - revive          # drop-in replacement of golint
+    - misspell        # checks for commonly misspelled English words
+    - unused          # checks for ill-formed or insufficient nolint directives
+    - cyclop          # checks the cyclomatic complexity of functions
+
+issues:
+  fix: true
+  exclude-use-default: false
+  exclude-rules:
+    - linters:
+        - goconst
+        - noctx
+        - unused
+        - cyclop
+      path: "_test.go"
+    - linters:
+        - goconst
+        - noctx
+        - unused
+        - cyclop
+        - errcheck
+      path: "example_test.go"

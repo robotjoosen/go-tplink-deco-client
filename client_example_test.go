@@ -1,31 +1,32 @@
 package tplink_deco_client_test
 
 import (
+	"context"
+	"log/slog"
+
 	decoClient "github.com/robotjoosen/go-tplink-deco-client"
 )
 
 func ExampleClient() {
-	client := decoClient.New("http://192.168.2.1")
-	if err := client.Login("xbt7v)p/zP5)$hx"); err != nil {
+	ctx := context.Background()
+
+	client, err := decoClient.
+		New("192.168.2.1").
+		Authenticate(ctx, "xbt7v)p/zP5)$hx")
+	if err != nil {
+		slog.Error("auth", slog.String("error", err.Error()))
+
 		return
 	}
 
+	devices, err := client.GetDevices(ctx)
+	if err != nil {
+		slog.Error("devices", slog.String("error", err.Error()))
+
+		return
+	}
+
+	slog.Info("client", slog.Any("devices", devices))
+
 	// output:
 }
-
-//if _, err := client.GetClients(); err != nil {
-//	//panic(err)
-//	return
-//}
-//
-//if _, err := client.GetDevices(); err != nil {
-//	//panic(err)
-//	return
-//}
-//
-//d := `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`
-//a, _ := client.Decrypt(d)
-//r, _ := client.Encrypt(string(a))
-//
-//fmt.Println([]byte(d))
-//fmt.Println(r)

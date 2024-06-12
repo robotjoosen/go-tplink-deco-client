@@ -1,7 +1,8 @@
 package model
 
 type OperationRequest struct {
-	Operation string `json:"operation"`
+	Operation string                 `json:"operation,omitempty"`
+	Params    map[string]interface{} `json:"params,omitempty"`
 }
 
 type ClientListResponse struct {
@@ -74,18 +75,25 @@ type DeviceListResponse struct {
 	ErrorCode int `json:"error_code"`
 }
 
+type LoginResponse struct {
+	Result struct {
+		Stok string `json:"stok"`
+	} `json:"result"`
+	ErrCode int `json:"error_code"`
+}
+
 type LoginKeyResponse struct {
 	Result struct {
 		Username string   `json:"username"`
 		Password []string `json:"password"`
 	} `json:"result"`
-	ErrorCode int `json:"error_code"`
+	ErrCode int `json:"error_code"`
 }
 
-type LoginAuthResponse struct {
+type SessionKeyResponse struct {
 	Result struct {
 		Key []string `json:"key"`
-		Seq int      `json:"seq"`
+		Seq uint     `json:"seq"`
 	} `json:"result"`
 	ErrorCode int `json:"error_code"`
 }

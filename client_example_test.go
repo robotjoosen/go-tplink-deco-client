@@ -26,7 +26,14 @@ func ExampleClient() {
 		return
 	}
 
-	slog.Info("client", slog.Any("devices", devices))
+	clients, err := client.GetClients(ctx)
+	if err != nil {
+		slog.Error("clients", slog.String("error", err.Error()))
+
+		return
+	}
+
+	slog.Info("client", slog.Any("devices", devices), slog.Any("clients", clients))
 
 	// output:
 }

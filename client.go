@@ -15,6 +15,7 @@ const username = "admin"
 type ClientAware interface {
 	Login(ctx context.Context, username, password string) (model.LoginResponse, error)
 	GetDevices(ctx context.Context) (model.DeviceListResponse, error)
+	GetClients(ctx context.Context) (model.ClientListResponse, error)
 }
 
 type Client struct {
@@ -49,18 +50,57 @@ func (c *Client) GetDevices(ctx context.Context) (exportModel.Devices, error) {
 		return nil, err
 	}
 
-	output := make([]exportModel.Device, 0, len(res.Result.DeviceList))
-	for _, device := range res.Result.DeviceList {
-		macAddress, err := net.ParseMAC(device.Mac)
+	output := make(exportModel.Devices, 0, len(res.Result.DeviceList))
+	for _, item := range res.Result.DeviceList {
+		macAddress, err := net.ParseMAC(item.Mac)
 		if err != nil {
 			return nil, err
 		}
 
 		output = append(output, exportModel.Device{
-			ID:         device.DeviceId,
-			Name:       device.Nickname,
-			IPAddress:  net.ParseIP(device.DeviceIp),
+			ID:         item.DeviceID,
+			Name:       item.Nickname,
+			IPAddress:  net.ParseIP(item.DeviceIP),
 			MACAddress: macAddress,
+		})
+	}
+
+	return output, nil
+}
+
+func (c *Client) GetClients(ctx context.Context) (exportModel.Clients, error) {
+	if !c.authenticated {
+		return exportModel.Clients{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetClients(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	output := make(exportModel.Clients, 0, len(res.Result.ClientList))
+	for _, item := range res.Result.ClientList {
+		macAddress, err := net.ParseMAC(item.Mac)
+		if err != nil {
+			return nil, err
+		}
+
+		output = append(output, exportModel.Client{
+			Name:           item.Name,
+			OwnerId:        item.OwnerID,
+			Online:         item.Online,
+			WireType:       item.WireType,
+			ClientType:     item.ClientType,
+			ConnectionType: item.ConnectionType,
+			AccessHost:     item.AccessHost,
+			SpaceID:        item.SpaceID,
+			ClientMesh:     item.ClientMesh,
+			EnablePriority: item.EnablePriority,
+			RemainTime:     item.RemainTime,
+			UpSpeed:        item.UpSpeed,
+			DownSpeed:      item.DownSpeed,
+			IPAddress:      net.ParseIP(item.IP),
+			MACAddress:     macAddress,
 		})
 	}
 

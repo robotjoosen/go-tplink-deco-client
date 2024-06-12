@@ -6,6 +6,7 @@ import (
 	"context"
 	"crypto/md5"
 	"crypto/rsa"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -103,6 +104,38 @@ func (c *HTTPClient) GetDevices(ctx context.Context) (model.DeviceListResponse, 
 	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/device", c.stok), args, readBody, false, &res)
 	if err != nil {
 		return res, err
+	}
+
+	return res, nil
+}
+
+func (c *HTTPClient) GetClients(ctx context.Context) (model.ClientListResponse, error) {
+	var res model.ClientListResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{
+		Operation: "read",
+		Params: map[string]interface{}{
+			"device_mac": "default",
+		},
+	})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "client_list")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/client", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	// decode client names
+	for i := range res.Result.ClientList {
+		name, err := base64.StdEncoding.DecodeString(res.Result.ClientList[i].Name)
+		if err == nil {
+			res.Result.ClientList[i].Name = string(name)
+		}
 	}
 
 	return res, nil

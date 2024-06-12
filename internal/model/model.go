@@ -14,14 +14,14 @@ type ClientListResponse struct {
 			WireType       string `json:"wire_type"`
 			AccessHost     string `json:"access_host"`
 			ConnectionType string `json:"connection_type"`
-			SpaceId        string `json:"space_id"`
-			Ip             string `json:"ip"`
+			SpaceID        string `json:"space_id"`
+			IP             string `json:"ip"`
 			ClientMesh     bool   `json:"client_mesh"`
 			Online         bool   `json:"online"`
 			Name           string `json:"name"`
 			EnablePriority bool   `json:"enable_priority"`
 			RemainTime     int    `json:"remain_time"`
-			OwnerId        string `json:"owner_id"`
+			OwnerID        string `json:"owner_id"`
 			ClientType     string `json:"client_type"`
 			Interface      string `json:"interface"`
 		} `json:"client_list"`
@@ -35,10 +35,10 @@ type DeviceListResponse struct {
 			NandFlash         bool     `json:"nand_flash"`
 			OwnerTransfer     bool     `json:"owner_transfer,omitempty"`
 			Previous          string   `json:"previous"`
-			ParentDeviceId    string   `json:"parent_device_id,omitempty"`
+			ParentDeviceID    string   `json:"parent_device_id,omitempty"`
 			Role              string   `json:"role"`
 			BssidSta5G        string   `json:"bssid_sta_5g"`
-			SupportPlc        bool     `json:"support_plc"`
+			SupportPLC        bool     `json:"support_plc"`
 			SetGatewaySupport bool     `json:"set_gateway_support"`
 			GroupStatus       string   `json:"group_status"`
 			WiredPortList     struct{} `json:"wired_port_list,omitempty"`
@@ -56,11 +56,11 @@ type DeviceListResponse struct {
 			InetStatus        string `json:"inet_status"`
 			Mac               string `json:"mac"`
 			InetErrorMsg      string `json:"inet_error_msg"`
-			DeviceIp          string `json:"device_ip"`
-			SoftwareVer       string `json:"software_ver"`
-			DeviceId          string `json:"device_id,omitempty"`
+			DeviceIP          string `json:"device_ip"`
+			SoftwareVersion   string `json:"software_ver"`
+			DeviceID          string `json:"device_id,omitempty"`
 			BssidSta2G        string `json:"bssid_sta_2g"`
-			OemId             string `json:"oem_id"`
+			OemID             string `json:"oem_id"`
 			Nickname          string `json:"nickname"`
 			ProductLevel      int    `json:"product_level"`
 			OversizedFirmware bool   `json:"oversized_firmware"`

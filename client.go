@@ -31,6 +31,7 @@ type ClientAware interface {
 	Logout(ctx context.Context) error
 	GetSystemLog(ctx context.Context) (model.SysLogResponse, error)
 	SaveLog(ctx context.Context) (model.LogExportResponse, error)
+	GetIGMPSettings(ctx context.Context) (model.IGMPSettingResponse, error)
 }
 
 type Client struct {
@@ -382,6 +383,21 @@ func (c *Client) SaveLog(ctx context.Context) (exportModel.LogExportResult, erro
 
 	return exportModel.LogExportResult{
 		Filename: res.Filename,
+	}, nil
+}
+
+func (c *Client) GetIGMPSettings(ctx context.Context) (exportModel.IGMPSettings, error) {
+	if !c.authenticated {
+		return exportModel.IGMPSettings{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetIGMPSettings(ctx)
+	if err != nil {
+		return exportModel.IGMPSettings{}, err
+	}
+
+	return exportModel.IGMPSettings{
+		Enabled: res.IGMPEnable,
 	}, nil
 }
 

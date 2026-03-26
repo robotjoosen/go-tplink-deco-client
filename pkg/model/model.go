@@ -152,3 +152,7 @@ type SystemLog struct {
 type LogExportResult struct {
 	Filename string
 }
+
+type IGMPSettings struct {
+	Enabled bool
+}

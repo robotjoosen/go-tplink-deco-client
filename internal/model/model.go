@@ -233,3 +233,8 @@ type LogExportResponse struct {
 	ErrorCode int    `json:"error_code"`
 	Filename  string `json:"filename"`
 }
+
+type IGMPSettingResponse struct {
+	ErrorCode  int  `json:"error_code"`
+	IGMPEnable bool `json:"igmp_enable"`
+}

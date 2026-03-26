@@ -419,6 +419,25 @@ func (c *HTTPClient) GetIGMPSettings(ctx context.Context) (model.IGMPSettingResp
 	return res, nil
 }
 
+func (c *HTTPClient) GetFastXmitSettings(ctx context.Context) (model.FastXmitSettingResponse, error) {
+	var res model.FastXmitSettingResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "fast_xmit_setting")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

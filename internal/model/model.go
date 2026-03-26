@@ -238,3 +238,8 @@ type IGMPSettingResponse struct {
 	ErrorCode  int  `json:"error_code"`
 	IGMPEnable bool `json:"igmp_enable"`
 }
+
+type FastXmitSettingResponse struct {
+	ErrorCode      int  `json:"error_code"`
+	FastXmitEnable bool `json:"fast_xmit_enable"`
+}

@@ -32,6 +32,7 @@ type ClientAware interface {
 	GetSystemLog(ctx context.Context) (model.SysLogResponse, error)
 	SaveLog(ctx context.Context) (model.LogExportResponse, error)
 	GetIGMPSettings(ctx context.Context) (model.IGMPSettingResponse, error)
+	GetFastXmitSettings(ctx context.Context) (model.FastXmitSettingResponse, error)
 }
 
 type Client struct {
@@ -398,6 +399,21 @@ func (c *Client) GetIGMPSettings(ctx context.Context) (exportModel.IGMPSettings,
 
 	return exportModel.IGMPSettings{
 		Enabled: res.IGMPEnable,
+	}, nil
+}
+
+func (c *Client) GetFastXmitSettings(ctx context.Context) (exportModel.FastXmitSettings, error) {
+	if !c.authenticated {
+		return exportModel.FastXmitSettings{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetFastXmitSettings(ctx)
+	if err != nil {
+		return exportModel.FastXmitSettings{}, err
+	}
+
+	return exportModel.FastXmitSettings{
+		Enabled: res.FastXmitEnable,
 	}, nil
 }
 

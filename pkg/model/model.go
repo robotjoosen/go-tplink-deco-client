@@ -156,3 +156,7 @@ type LogExportResult struct {
 type IGMPSettings struct {
 	Enabled bool
 }
+
+type FastXmitSettings struct {
+	Enabled bool
+}

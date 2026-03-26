@@ -381,6 +381,25 @@ func (c *HTTPClient) GetSystemLog(ctx context.Context) (model.SysLogResponse, er
 	return res, nil
 }
 
+func (c *HTTPClient) SaveLog(ctx context.Context) (model.LogExportResponse, error) {
+	var res model.LogExportResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "save_log"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "save_log")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/log_export", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

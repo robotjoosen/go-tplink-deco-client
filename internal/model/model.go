@@ -228,3 +228,8 @@ type SysLogResponse struct {
 	ErrorCode int    `json:"error_code"`
 	Log       string `json:"log"`
 }
+
+type LogExportResponse struct {
+	ErrorCode int    `json:"error_code"`
+	Filename  string `json:"filename"`
+}

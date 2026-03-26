@@ -30,6 +30,7 @@ type ClientAware interface {
 	GetLEDPower(ctx context.Context) (model.LEDPowerResponse, error)
 	Logout(ctx context.Context) error
 	GetSystemLog(ctx context.Context) (model.SysLogResponse, error)
+	SaveLog(ctx context.Context) (model.LogExportResponse, error)
 }
 
 type Client struct {
@@ -366,6 +367,21 @@ func (c *Client) GetSystemLog(ctx context.Context) (exportModel.SystemLog, error
 
 	return exportModel.SystemLog{
 		Content: res.Log,
+	}, nil
+}
+
+func (c *Client) SaveLog(ctx context.Context) (exportModel.LogExportResult, error) {
+	if !c.authenticated {
+		return exportModel.LogExportResult{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.SaveLog(ctx)
+	if err != nil {
+		return exportModel.LogExportResult{}, err
+	}
+
+	return exportModel.LogExportResult{
+		Filename: res.Filename,
 	}, nil
 }
 

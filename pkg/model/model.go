@@ -148,3 +148,7 @@ type LEDPowerSettings struct {
 type SystemLog struct {
 	Content string
 }
+
+type LogExportResult struct {
+	Filename string
+}

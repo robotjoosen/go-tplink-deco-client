@@ -116,3 +116,12 @@ type InternetStatus struct {
 	Speed    int
 	Duplex   int
 }
+
+type IPv6Settings struct {
+	Enabled  bool
+	DialType string
+	IP       net.IP
+	Prefix   string
+	DNS1     net.IP
+	DNS2     net.IP
+}

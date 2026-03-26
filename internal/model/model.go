@@ -179,3 +179,17 @@ type InternetStatusResponse struct {
 	Speed        int    `json:"speed"`
 	Duplex       int    `json:"duplex"`
 }
+
+type IPv6Response struct {
+	ErrorCode  int     `json:"error_code"`
+	EnableIPv6 bool    `json:"enable_ipv6"`
+	WAN        IPv6WAN `json:"wan"`
+}
+
+type IPv6WAN struct {
+	DialType string `json:"dial_type"`
+	IP       string `json:"ip"`
+	Prefix   string `json:"prefix"`
+	DNS1     string `json:"dns1"`
+	DNS2     string `json:"dns2"`
+}

@@ -273,6 +273,25 @@ func (c *HTTPClient) GetInternetStatus(ctx context.Context) (model.InternetStatu
 	return res, nil
 }
 
+func (c *HTTPClient) GetIPv6Settings(ctx context.Context) (model.IPv6Response, error) {
+	var res model.IPv6Response
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "ipv")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

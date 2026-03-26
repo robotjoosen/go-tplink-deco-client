@@ -5,6 +5,10 @@ type OperationRequest struct {
 	Params    map[string]interface{} `json:"params,omitempty"`
 }
 
+type ErrorResponse struct {
+	ErrorCode int `json:"error_code"`
+}
+
 type ClientListResponse struct {
 	Result struct {
 		ClientList []struct {
@@ -147,4 +151,23 @@ type LANIPInfo struct {
 	IP   string `json:"ip"`
 	Mask string `json:"mask"`
 	MAC  string `json:"mac"`
+}
+
+type WiFiResponse struct {
+	ErrorCode int      `json:"error_code"`
+	Band24    WiFiBand `json:"band2_4"`
+	Band5     WiFiBand `json:"band5_1"`
+	Band6     WiFiBand `json:"band6"`
+}
+
+type WiFiBand struct {
+	Host  WiFiNetwork `json:"host"`
+	Guest WiFiNetwork `json:"guest"`
+	IoT   WiFiNetwork `json:"iot"`
+}
+
+type WiFiNetwork struct {
+	Enable bool   `json:"enable"`
+	SSID   string `json:"ssid,omitempty"`
+	Key    string `json:"key,omitempty"`
 }

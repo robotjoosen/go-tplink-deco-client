@@ -91,3 +91,21 @@ type WANInfo struct {
 	LANIP      net.IP
 	LANSubnet  net.IPMask
 }
+
+type WiFiSettings struct {
+	Band24 WiFiBandSettings `json:"band24"`
+	Band5  WiFiBandSettings `json:"band5"`
+	Band6  WiFiBandSettings `json:"band6"`
+}
+
+type WiFiBandSettings struct {
+	Host  WiFiNetworkSettings
+	Guest WiFiNetworkSettings
+	IoT   WiFiNetworkSettings
+}
+
+type WiFiNetworkSettings struct {
+	Enabled  bool
+	SSID     string
+	Password string
+}

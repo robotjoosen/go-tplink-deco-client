@@ -21,6 +21,8 @@ type ClientAware interface {
 	RebootDevice(ctx context.Context, macAddrs []string) error
 	Custom(ctx context.Context, path string, form string, body []byte) (interface{}, error)
 	GetWANIPv4Info(ctx context.Context) (model.WANIPv4Response, error)
+	GetWiFiSettings(ctx context.Context) (model.WiFiResponse, error)
+	SetWiFiSettings(ctx context.Context, settings map[string]interface{}) error
 }
 
 type Client struct {
@@ -197,4 +199,49 @@ func (c *Client) GetWANIPv4Info(ctx context.Context) (exportModel.WANInfo, error
 		LANIP:      net.ParseIP(res.LAN.IPInfo.IP),
 		LANSubnet:  lanSubnet.Mask,
 	}, nil
+}
+
+func (c *Client) GetWiFiSettings(ctx context.Context) (exportModel.WiFiSettings, error) {
+	if !c.authenticated {
+		return exportModel.WiFiSettings{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetWiFiSettings(ctx)
+	if err != nil {
+		return exportModel.WiFiSettings{}, err
+	}
+
+	return exportModel.WiFiSettings{
+		Band24: exportModel.WiFiBandSettings{
+			Host:  toNetworkSettings(res.Band24.Host),
+			Guest: toNetworkSettings(res.Band24.Guest),
+			IoT:   toNetworkSettings(res.Band24.IoT),
+		},
+		Band5: exportModel.WiFiBandSettings{
+			Host:  toNetworkSettings(res.Band5.Host),
+			Guest: toNetworkSettings(res.Band5.Guest),
+			IoT:   toNetworkSettings(res.Band5.IoT),
+		},
+		Band6: exportModel.WiFiBandSettings{
+			Host:  toNetworkSettings(res.Band6.Host),
+			Guest: toNetworkSettings(res.Band6.Guest),
+			IoT:   toNetworkSettings(res.Band6.IoT),
+		},
+	}, nil
+}
+
+func (c *Client) SetWiFiSettings(ctx context.Context, settings map[string]interface{}) error {
+	if !c.authenticated {
+		return errors.New("not authenticated")
+	}
+
+	return c.client.SetWiFiSettings(ctx, settings)
+}
+
+func toNetworkSettings(n model.WiFiNetwork) exportModel.WiFiNetworkSettings {
+	return exportModel.WiFiNetworkSettings{
+		Enabled:  n.Enable,
+		SSID:     n.SSID,
+		Password: n.Key,
+	}
 }

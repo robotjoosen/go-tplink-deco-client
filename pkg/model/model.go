@@ -125,3 +125,10 @@ type IPv6Settings struct {
 	DNS1     net.IP
 	DNS2     net.IP
 }
+
+type LANIPSettings struct {
+	IP         net.IP
+	SubnetMask net.IPMask
+	DHCPEnable bool
+	DHCPType   string
+}

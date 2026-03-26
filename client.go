@@ -25,6 +25,7 @@ type ClientAware interface {
 	SetWiFiSettings(ctx context.Context, settings map[string]interface{}) error
 	GetInternetStatus(ctx context.Context) (model.InternetStatusResponse, error)
 	GetIPv6Settings(ctx context.Context) (model.IPv6Response, error)
+	GetLANIPSettings(ctx context.Context) (model.LANIPResponse, error)
 }
 
 type Client struct {
@@ -275,6 +276,29 @@ func (c *Client) GetIPv6Settings(ctx context.Context) (exportModel.IPv6Settings,
 		Prefix:   res.WAN.Prefix,
 		DNS1:     net.ParseIP(res.WAN.DNS1),
 		DNS2:     net.ParseIP(res.WAN.DNS2),
+	}, nil
+}
+
+func (c *Client) GetLANIPSettings(ctx context.Context) (exportModel.LANIPSettings, error) {
+	if !c.authenticated {
+		return exportModel.LANIPSettings{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetLANIPSettings(ctx)
+	if err != nil {
+		return exportModel.LANIPSettings{}, err
+	}
+
+	_, subnet, err := net.ParseCIDR(res.LAN.Mask)
+	if err != nil {
+		return exportModel.LANIPSettings{}, err
+	}
+
+	return exportModel.LANIPSettings{
+		IP:         net.ParseIP(res.LAN.IP),
+		SubnetMask: subnet.Mask,
+		DHCPEnable: res.LAN.DHCPEnable,
+		DHCPType:   res.LAN.DHCPType,
 	}, nil
 }
 

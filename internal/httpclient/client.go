@@ -292,6 +292,25 @@ func (c *HTTPClient) GetIPv6Settings(ctx context.Context) (model.IPv6Response, e
 	return res, nil
 }
 
+func (c *HTTPClient) GetLANIPSettings(ctx context.Context) (model.LANIPResponse, error) {
+	var res model.LANIPResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "lan_ip")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

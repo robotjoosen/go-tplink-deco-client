@@ -193,3 +193,15 @@ type IPv6WAN struct {
 	DNS1     string `json:"dns1"`
 	DNS2     string `json:"dns2"`
 }
+
+type LANIPResponse struct {
+	ErrorCode int         `json:"error_code"`
+	LAN       LANIPConfig `json:"lan"`
+}
+
+type LANIPConfig struct {
+	IP         string `json:"ip"`
+	Mask       string `json:"mask"`
+	DHCPEnable bool   `json:"dhcp_enable"`
+	DHCPType   string `json:"dhcp_type"`
+}

@@ -254,6 +254,25 @@ func (c *HTTPClient) SetWiFiSettings(ctx context.Context, settings map[string]in
 	return c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/wireless", c.stok), args, jsonBody, false, &res)
 }
 
+func (c *HTTPClient) GetInternetStatus(ctx context.Context) (model.InternetStatusResponse, error) {
+	var res model.InternetStatusResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "internet")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

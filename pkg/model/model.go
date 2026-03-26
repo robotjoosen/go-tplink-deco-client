@@ -109,3 +109,10 @@ type WiFiNetworkSettings struct {
 	SSID     string
 	Password string
 }
+
+type InternetStatus struct {
+	Status   string
+	ErrorMsg string
+	Speed    int
+	Duplex   int
+}

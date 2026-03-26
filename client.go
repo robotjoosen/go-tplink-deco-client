@@ -23,6 +23,7 @@ type ClientAware interface {
 	GetWANIPv4Info(ctx context.Context) (model.WANIPv4Response, error)
 	GetWiFiSettings(ctx context.Context) (model.WiFiResponse, error)
 	SetWiFiSettings(ctx context.Context, settings map[string]interface{}) error
+	GetInternetStatus(ctx context.Context) (model.InternetStatusResponse, error)
 }
 
 type Client struct {
@@ -236,6 +237,24 @@ func (c *Client) SetWiFiSettings(ctx context.Context, settings map[string]interf
 	}
 
 	return c.client.SetWiFiSettings(ctx, settings)
+}
+
+func (c *Client) GetInternetStatus(ctx context.Context) (exportModel.InternetStatus, error) {
+	if !c.authenticated {
+		return exportModel.InternetStatus{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetInternetStatus(ctx)
+	if err != nil {
+		return exportModel.InternetStatus{}, err
+	}
+
+	return exportModel.InternetStatus{
+		Status:   res.InetStatus,
+		ErrorMsg: res.InetErrorMsg,
+		Speed:    res.Speed,
+		Duplex:   res.Duplex,
+	}, nil
 }
 
 func toNetworkSettings(n model.WiFiNetwork) exportModel.WiFiNetworkSettings {

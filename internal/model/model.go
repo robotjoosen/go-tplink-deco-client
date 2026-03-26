@@ -171,3 +171,11 @@ type WiFiNetwork struct {
 	SSID   string `json:"ssid,omitempty"`
 	Key    string `json:"key,omitempty"`
 }
+
+type InternetStatusResponse struct {
+	ErrorCode    int    `json:"error_code"`
+	InetStatus   string `json:"inet_status"`
+	InetErrorMsg string `json:"inet_error_msg"`
+	Speed        int    `json:"speed"`
+	Duplex       int    `json:"duplex"`
+}

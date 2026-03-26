@@ -27,6 +27,7 @@ type ClientAware interface {
 	GetIPv6Settings(ctx context.Context) (model.IPv6Response, error)
 	GetLANIPSettings(ctx context.Context) (model.LANIPResponse, error)
 	GetDHCPDialSettings(ctx context.Context) (model.DHCPDialResponse, error)
+	GetLEDPower(ctx context.Context) (model.LEDPowerResponse, error)
 }
 
 type Client struct {
@@ -319,6 +320,21 @@ func (c *Client) GetDHCPDialSettings(ctx context.Context) (exportModel.DHCPDialS
 		Password:    res.Password,
 		HostName:    res.HostName,
 		ServiceName: res.ServiceName,
+	}, nil
+}
+
+func (c *Client) GetLEDPower(ctx context.Context) (exportModel.LEDPowerSettings, error) {
+	if !c.authenticated {
+		return exportModel.LEDPowerSettings{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetLEDPower(ctx)
+	if err != nil {
+		return exportModel.LEDPowerSettings{}, err
+	}
+
+	return exportModel.LEDPowerSettings{
+		Enabled: res.LEDEnable,
 	}, nil
 }
 

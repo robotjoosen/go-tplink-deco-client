@@ -214,3 +214,8 @@ type DHCPDialResponse struct {
 	HostName    string `json:"host_name"`
 	ServiceName string `json:"service_name"`
 }
+
+type LEDPowerResponse struct {
+	ErrorCode int  `json:"error_code"`
+	LEDEnable bool `json:"led_enable"`
+}

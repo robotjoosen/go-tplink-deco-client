@@ -330,6 +330,25 @@ func (c *HTTPClient) GetDHCPDialSettings(ctx context.Context) (model.DHCPDialRes
 	return res, nil
 }
 
+func (c *HTTPClient) GetLEDPower(ctx context.Context) (model.LEDPowerResponse, error) {
+	var res model.LEDPowerResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "power")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/wireless", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

@@ -140,3 +140,7 @@ type DHCPDialSettings struct {
 	HostName    string
 	ServiceName string
 }
+
+type LEDPowerSettings struct {
+	Enabled bool
+}

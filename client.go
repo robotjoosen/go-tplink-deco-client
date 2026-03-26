@@ -29,6 +29,7 @@ type ClientAware interface {
 	GetDHCPDialSettings(ctx context.Context) (model.DHCPDialResponse, error)
 	GetLEDPower(ctx context.Context) (model.LEDPowerResponse, error)
 	Logout(ctx context.Context) error
+	GetSystemLog(ctx context.Context) (model.SysLogResponse, error)
 }
 
 type Client struct {
@@ -351,6 +352,21 @@ func (c *Client) Logout(ctx context.Context) error {
 
 	c.authenticated = false
 	return nil
+}
+
+func (c *Client) GetSystemLog(ctx context.Context) (exportModel.SystemLog, error) {
+	if !c.authenticated {
+		return exportModel.SystemLog{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetSystemLog(ctx)
+	if err != nil {
+		return exportModel.SystemLog{}, err
+	}
+
+	return exportModel.SystemLog{
+		Content: res.Log,
+	}, nil
 }
 
 func toNetworkSettings(n model.WiFiNetwork) exportModel.WiFiNetworkSettings {

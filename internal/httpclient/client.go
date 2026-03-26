@@ -362,6 +362,25 @@ func (c *HTTPClient) Logout(ctx context.Context) error {
 	return c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/system", c.stok), args, logoutBody, false, &res)
 }
 
+func (c *HTTPClient) GetSystemLog(ctx context.Context) (model.SysLogResponse, error) {
+	var res model.SysLogResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "log")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/syslog", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

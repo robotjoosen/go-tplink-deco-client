@@ -144,3 +144,7 @@ type DHCPDialSettings struct {
 type LEDPowerSettings struct {
 	Enabled bool
 }
+
+type SystemLog struct {
+	Content string
+}

@@ -223,3 +223,8 @@ type LEDPowerResponse struct {
 type LogoutResponse struct {
 	ErrorCode int `json:"error_code"`
 }
+
+type SysLogResponse struct {
+	ErrorCode int    `json:"error_code"`
+	Log       string `json:"log"`
+}

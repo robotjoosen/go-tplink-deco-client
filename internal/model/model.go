@@ -219,3 +219,7 @@ type LEDPowerResponse struct {
 	ErrorCode int  `json:"error_code"`
 	LEDEnable bool `json:"led_enable"`
 }
+
+type LogoutResponse struct {
+	ErrorCode int `json:"error_code"`
+}

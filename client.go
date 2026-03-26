@@ -28,6 +28,7 @@ type ClientAware interface {
 	GetLANIPSettings(ctx context.Context) (model.LANIPResponse, error)
 	GetDHCPDialSettings(ctx context.Context) (model.DHCPDialResponse, error)
 	GetLEDPower(ctx context.Context) (model.LEDPowerResponse, error)
+	Logout(ctx context.Context) error
 }
 
 type Client struct {
@@ -336,6 +337,20 @@ func (c *Client) GetLEDPower(ctx context.Context) (exportModel.LEDPowerSettings,
 	return exportModel.LEDPowerSettings{
 		Enabled: res.LEDEnable,
 	}, nil
+}
+
+func (c *Client) Logout(ctx context.Context) error {
+	if !c.authenticated {
+		return errors.New("not authenticated")
+	}
+
+	err := c.client.Logout(ctx)
+	if err != nil {
+		return err
+	}
+
+	c.authenticated = false
+	return nil
 }
 
 func toNetworkSettings(n model.WiFiNetwork) exportModel.WiFiNetworkSettings {

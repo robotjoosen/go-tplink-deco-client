@@ -349,6 +349,19 @@ func (c *HTTPClient) GetLEDPower(ctx context.Context) (model.LEDPowerResponse, e
 	return res, nil
 }
 
+func (c *HTTPClient) Logout(ctx context.Context) error {
+	logoutBody, err := json.Marshal(model.OperationRequest{Operation: "logout"})
+	if err != nil {
+		return err
+	}
+
+	args := url.Values{}
+	args.Add("form", "logout")
+
+	var res model.ErrorResponse
+	return c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/system", c.stok), args, logoutBody, false, &res)
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

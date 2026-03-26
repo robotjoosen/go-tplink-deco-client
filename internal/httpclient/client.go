@@ -198,6 +198,25 @@ func (c *HTTPClient) Custom(ctx context.Context, path string, form string, body 
 	return result, err
 }
 
+func (c *HTTPClient) GetWANIPv4Info(ctx context.Context) (model.WANIPv4Response, error) {
+	var res model.WANIPv4Response
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "wan_ipv")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

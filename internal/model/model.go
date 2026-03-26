@@ -117,3 +117,34 @@ type RebootResponse struct {
 	ErrorCode int                    `json:"error_code"`
 	Result    map[string]interface{} `json:"result"`
 }
+
+type WANIPv4Response struct {
+	ErrorCode int        `json:"error_code"`
+	WAN       WANSection `json:"wan"`
+	LAN       LANSection `json:"lan"`
+}
+
+type WANSection struct {
+	IPInfo     WANIPInfo `json:"ip_info"`
+	DialType   string    `json:"dial_type"`
+	LinkStatus string    `json:"link_status,omitempty"`
+}
+
+type WANIPInfo struct {
+	IP      string `json:"ip"`
+	Mask    string `json:"mask"`
+	Gateway string `json:"gateway"`
+	MAC     string `json:"mac"`
+	DNS1    string `json:"dns1"`
+	DNS2    string `json:"dns2"`
+}
+
+type LANSection struct {
+	IPInfo LANIPInfo `json:"ip_info"`
+}
+
+type LANIPInfo struct {
+	IP   string `json:"ip"`
+	Mask string `json:"mask"`
+	MAC  string `json:"mac"`
+}

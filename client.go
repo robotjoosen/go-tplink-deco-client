@@ -20,6 +20,7 @@ type ClientAware interface {
 	GetPerformance(ctx context.Context) (model.PerformanceResponse, error)
 	RebootDevice(ctx context.Context, macAddrs []string) error
 	Custom(ctx context.Context, path string, form string, body []byte) (interface{}, error)
+	GetWANIPv4Info(ctx context.Context) (model.WANIPv4Response, error)
 }
 
 type Client struct {
@@ -151,4 +152,49 @@ func (c *Client) Custom(ctx context.Context, path string, form string, operation
 	}
 
 	return c.client.Custom(ctx, path, form, jsonBody)
+}
+
+func (c *Client) GetWANIPv4Info(ctx context.Context) (exportModel.WANInfo, error) {
+	if !c.authenticated {
+		return exportModel.WANInfo{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetWANIPv4Info(ctx)
+	if err != nil {
+		return exportModel.WANInfo{}, err
+	}
+
+	wanMAC, err := net.ParseMAC(res.WAN.IPInfo.MAC)
+	if err != nil {
+		return exportModel.WANInfo{}, err
+	}
+
+	lanMAC, err := net.ParseMAC(res.LAN.IPInfo.MAC)
+	if err != nil {
+		return exportModel.WANInfo{}, err
+	}
+
+	_, wanSubnet, err := net.ParseCIDR(res.WAN.IPInfo.Mask)
+	if err != nil {
+		return exportModel.WANInfo{}, err
+	}
+
+	_, lanSubnet, err := net.ParseCIDR(res.LAN.IPInfo.Mask)
+	if err != nil {
+		return exportModel.WANInfo{}, err
+	}
+
+	return exportModel.WANInfo{
+		WANMAC:     wanMAC,
+		WANIP:      net.ParseIP(res.WAN.IPInfo.IP),
+		WANGateway: net.ParseIP(res.WAN.IPInfo.Gateway),
+		WANDNS1:    net.ParseIP(res.WAN.IPInfo.DNS1),
+		WANDNS2:    net.ParseIP(res.WAN.IPInfo.DNS2),
+		WANSubnet:  wanSubnet.Mask,
+		WANType:    res.WAN.DialType,
+		LinkStatus: res.WAN.LinkStatus,
+		LANMAC:     lanMAC,
+		LANIP:      net.ParseIP(res.LAN.IPInfo.IP),
+		LANSubnet:  lanSubnet.Mask,
+	}, nil
 }

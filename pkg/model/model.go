@@ -77,3 +77,17 @@ type Performance struct {
 	CPU float32
 	MEM float32
 }
+
+type WANInfo struct {
+	WANMAC     net.HardwareAddr
+	WANIP      net.IP
+	WANGateway net.IP
+	WANDNS1    net.IP
+	WANDNS2    net.IP
+	WANSubnet  net.IPMask
+	WANType    string
+	LinkStatus string
+	LANMAC     net.HardwareAddr
+	LANIP      net.IP
+	LANSubnet  net.IPMask
+}

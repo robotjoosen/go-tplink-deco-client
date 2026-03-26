@@ -438,6 +438,44 @@ func (c *HTTPClient) GetFastXmitSettings(ctx context.Context) (model.FastXmitSet
 	return res, nil
 }
 
+func (c *HTTPClient) GetQoSSettings(ctx context.Context) (model.FlowControlResponse, error) {
+	var res model.FlowControlResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "flow_control")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (c *HTTPClient) GetFlowControlLANWAN(ctx context.Context) (model.FlowControlLANWANResponse, error) {
+	var res model.FlowControlLANWANResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "flow_control_lan_wan")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

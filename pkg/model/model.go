@@ -160,3 +160,14 @@ type IGMPSettings struct {
 type FastXmitSettings struct {
 	Enabled bool
 }
+
+type QoSSettings struct {
+	Enabled           bool
+	UploadBandwidth   int
+	DownloadBandwidth int
+}
+
+type FlowControlLANWAN struct {
+	LANEnabled bool
+	WANEnabled bool
+}

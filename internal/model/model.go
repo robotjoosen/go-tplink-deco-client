@@ -243,3 +243,16 @@ type FastXmitSettingResponse struct {
 	ErrorCode      int  `json:"error_code"`
 	FastXmitEnable bool `json:"fast_xmit_enable"`
 }
+
+type FlowControlResponse struct {
+	ErrorCode         int  `json:"error_code"`
+	FlowControlEnable bool `json:"flow_control_enable"`
+	UploadBandwidth   int  `json:"upload_bandwidth"`
+	DownloadBandwidth int  `json:"download_bandwidth"`
+}
+
+type FlowControlLANWANResponse struct {
+	ErrorCode int  `json:"error_code"`
+	LANEnable bool `json:"lan_enable"`
+	WANEnable bool `json:"wan_enable"`
+}

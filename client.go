@@ -33,6 +33,8 @@ type ClientAware interface {
 	SaveLog(ctx context.Context) (model.LogExportResponse, error)
 	GetIGMPSettings(ctx context.Context) (model.IGMPSettingResponse, error)
 	GetFastXmitSettings(ctx context.Context) (model.FastXmitSettingResponse, error)
+	GetQoSSettings(ctx context.Context) (model.FlowControlResponse, error)
+	GetFlowControlLANWAN(ctx context.Context) (model.FlowControlLANWANResponse, error)
 }
 
 type Client struct {
@@ -414,6 +416,39 @@ func (c *Client) GetFastXmitSettings(ctx context.Context) (exportModel.FastXmitS
 
 	return exportModel.FastXmitSettings{
 		Enabled: res.FastXmitEnable,
+	}, nil
+}
+
+func (c *Client) GetQoSSettings(ctx context.Context) (exportModel.QoSSettings, error) {
+	if !c.authenticated {
+		return exportModel.QoSSettings{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetQoSSettings(ctx)
+	if err != nil {
+		return exportModel.QoSSettings{}, err
+	}
+
+	return exportModel.QoSSettings{
+		Enabled:           res.FlowControlEnable,
+		UploadBandwidth:   res.UploadBandwidth,
+		DownloadBandwidth: res.DownloadBandwidth,
+	}, nil
+}
+
+func (c *Client) GetFlowControlLANWAN(ctx context.Context) (exportModel.FlowControlLANWAN, error) {
+	if !c.authenticated {
+		return exportModel.FlowControlLANWAN{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetFlowControlLANWAN(ctx)
+	if err != nil {
+		return exportModel.FlowControlLANWAN{}, err
+	}
+
+	return exportModel.FlowControlLANWAN{
+		LANEnabled: res.LANEnable,
+		WANEnabled: res.WANEnable,
 	}, nil
 }
 

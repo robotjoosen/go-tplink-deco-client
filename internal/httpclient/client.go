@@ -141,6 +141,25 @@ func (c *HTTPClient) GetClients(ctx context.Context) (model.ClientListResponse, 
 	return res, nil
 }
 
+func (c *HTTPClient) GetPerformance(ctx context.Context) (model.PerformanceResponse, error) {
+	var res model.PerformanceResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "performance")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

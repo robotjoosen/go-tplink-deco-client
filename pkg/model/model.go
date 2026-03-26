@@ -72,3 +72,8 @@ type (
 		ConnectionType []string `json:"connection_type,omitempty"`
 	}
 )
+
+type Performance struct {
+	CPU float32
+	MEM float32
+}

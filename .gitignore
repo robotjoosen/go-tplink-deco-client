@@ -3,6 +3,7 @@
 cover.out
 vendor/
 
+firmware/
 node_modules
 package-lock.json
 package.json

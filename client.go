@@ -16,6 +16,7 @@ type ClientAware interface {
 	Login(ctx context.Context, username, password string) (model.LoginResponse, error)
 	GetDevices(ctx context.Context) (model.DeviceListResponse, error)
 	GetClients(ctx context.Context) (model.ClientListResponse, error)
+	GetPerformance(ctx context.Context) (model.PerformanceResponse, error)
 }
 
 type Client struct {
@@ -105,4 +106,20 @@ func (c *Client) GetClients(ctx context.Context) (exportModel.Clients, error) {
 	}
 
 	return output, nil
+}
+
+func (c *Client) GetPerformance(ctx context.Context) (exportModel.Performance, error) {
+	if !c.authenticated {
+		return exportModel.Performance{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetPerformance(ctx)
+	if err != nil {
+		return exportModel.Performance{}, err
+	}
+
+	return exportModel.Performance{
+		CPU: res.Result.CPU,
+		MEM: res.Result.MEM,
+	}, nil
 }

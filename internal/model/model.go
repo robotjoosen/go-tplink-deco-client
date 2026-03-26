@@ -97,3 +97,11 @@ type SessionKeyResponse struct {
 	} `json:"result"`
 	ErrorCode int `json:"error_code"`
 }
+
+type PerformanceResponse struct {
+	ErrorCode int `json:"error_code"`
+	Result    struct {
+		CPU float32 `json:"cpu_usage"`
+		MEM float32 `json:"mem_usage"`
+	} `json:"result"`
+}

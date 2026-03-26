@@ -188,6 +188,16 @@ func (c *HTTPClient) RebootDevice(ctx context.Context, macAddrs []string) error 
 	return c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/device", c.stok), args, jsonBody, false, &res)
 }
 
+func (c *HTTPClient) Custom(ctx context.Context, path string, form string, body []byte) (interface{}, error) {
+	var result interface{}
+
+	args := url.Values{}
+	args.Add("form", form)
+
+	err := c.encryptPost(ctx, fmt.Sprintf(";stok=%s%s", c.stok, path), args, body, false, &result)
+	return result, err
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

@@ -2,6 +2,7 @@ package tplink_deco_client
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net"
 
@@ -18,6 +19,7 @@ type ClientAware interface {
 	GetClients(ctx context.Context) (model.ClientListResponse, error)
 	GetPerformance(ctx context.Context) (model.PerformanceResponse, error)
 	RebootDevice(ctx context.Context, macAddrs []string) error
+	Custom(ctx context.Context, path string, form string, body []byte) (interface{}, error)
 }
 
 type Client struct {
@@ -131,4 +133,22 @@ func (c *Client) RebootDevice(ctx context.Context, macAddrs ...string) error {
 	}
 
 	return c.client.RebootDevice(ctx, macAddrs)
+}
+
+func (c *Client) Custom(ctx context.Context, path string, form string, operation string, params map[string]interface{}) (interface{}, error) {
+	if !c.authenticated {
+		return nil, errors.New("not authenticated")
+	}
+
+	req := model.OperationRequest{
+		Operation: operation,
+		Params:    params,
+	}
+
+	jsonBody, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.client.Custom(ctx, path, form, jsonBody)
 }

@@ -205,3 +205,12 @@ type LANIPConfig struct {
 	DHCPEnable bool   `json:"dhcp_enable"`
 	DHCPType   string `json:"dhcp_type"`
 }
+
+type DHCPDialResponse struct {
+	ErrorCode   int    `json:"error_code"`
+	DialType    string `json:"dial_type"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	HostName    string `json:"host_name"`
+	ServiceName string `json:"service_name"`
+}

@@ -132,3 +132,11 @@ type LANIPSettings struct {
 	DHCPEnable bool
 	DHCPType   string
 }
+
+type DHCPDialSettings struct {
+	DialType    string
+	Username    string
+	Password    string
+	HostName    string
+	ServiceName string
+}

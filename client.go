@@ -26,6 +26,7 @@ type ClientAware interface {
 	GetInternetStatus(ctx context.Context) (model.InternetStatusResponse, error)
 	GetIPv6Settings(ctx context.Context) (model.IPv6Response, error)
 	GetLANIPSettings(ctx context.Context) (model.LANIPResponse, error)
+	GetDHCPDialSettings(ctx context.Context) (model.DHCPDialResponse, error)
 }
 
 type Client struct {
@@ -299,6 +300,25 @@ func (c *Client) GetLANIPSettings(ctx context.Context) (exportModel.LANIPSetting
 		SubnetMask: subnet.Mask,
 		DHCPEnable: res.LAN.DHCPEnable,
 		DHCPType:   res.LAN.DHCPType,
+	}, nil
+}
+
+func (c *Client) GetDHCPDialSettings(ctx context.Context) (exportModel.DHCPDialSettings, error) {
+	if !c.authenticated {
+		return exportModel.DHCPDialSettings{}, errors.New("not authenticated")
+	}
+
+	res, err := c.client.GetDHCPDialSettings(ctx)
+	if err != nil {
+		return exportModel.DHCPDialSettings{}, err
+	}
+
+	return exportModel.DHCPDialSettings{
+		DialType:    res.DialType,
+		Username:    res.Username,
+		Password:    res.Password,
+		HostName:    res.HostName,
+		ServiceName: res.ServiceName,
 	}, nil
 }
 

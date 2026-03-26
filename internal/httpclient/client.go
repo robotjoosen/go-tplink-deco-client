@@ -311,6 +311,25 @@ func (c *HTTPClient) GetLANIPSettings(ctx context.Context) (model.LANIPResponse,
 	return res, nil
 }
 
+func (c *HTTPClient) GetDHCPDialSettings(ctx context.Context) (model.DHCPDialResponse, error) {
+	var res model.DHCPDialResponse
+
+	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
+	if err != nil {
+		return res, err
+	}
+
+	args := url.Values{}
+	args.Add("form", "dhcp_dial")
+
+	err = c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/network", c.stok), args, readBody, false, &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {
 	readBody, err := json.Marshal(model.OperationRequest{Operation: "read"})
 	if err != nil {

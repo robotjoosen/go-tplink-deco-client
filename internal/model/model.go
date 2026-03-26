@@ -105,3 +105,15 @@ type PerformanceResponse struct {
 		MEM float32 `json:"mem_usage"`
 	} `json:"result"`
 }
+
+type RebootRequest struct {
+	Operation string `json:"operation"`
+	Params    struct {
+		MACList []map[string]string `json:"mac_list"`
+	} `json:"params"`
+}
+
+type RebootResponse struct {
+	ErrorCode int                    `json:"error_code"`
+	Result    map[string]interface{} `json:"result"`
+}

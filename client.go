@@ -17,6 +17,7 @@ type ClientAware interface {
 	GetDevices(ctx context.Context) (model.DeviceListResponse, error)
 	GetClients(ctx context.Context) (model.ClientListResponse, error)
 	GetPerformance(ctx context.Context) (model.PerformanceResponse, error)
+	RebootDevice(ctx context.Context, macAddrs []string) error
 }
 
 type Client struct {
@@ -122,4 +123,12 @@ func (c *Client) GetPerformance(ctx context.Context) (exportModel.Performance, e
 		CPU: res.Result.CPU,
 		MEM: res.Result.MEM,
 	}, nil
+}
+
+func (c *Client) RebootDevice(ctx context.Context, macAddrs ...string) error {
+	if !c.authenticated {
+		return errors.New("not authenticated")
+	}
+
+	return c.client.RebootDevice(ctx, macAddrs)
 }

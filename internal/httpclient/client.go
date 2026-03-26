@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/robotjoosen/go-tplink-deco-client/internal/crypto"
@@ -158,6 +159,33 @@ func (c *HTTPClient) GetPerformance(ctx context.Context) (model.PerformanceRespo
 	}
 
 	return res, nil
+}
+
+func (c *HTTPClient) RebootDevice(ctx context.Context, macAddrs []string) error {
+	var macList []map[string]string
+	for _, mac := range macAddrs {
+		macList = append(macList, map[string]string{
+			"mac": strings.ToUpper(mac),
+		})
+	}
+
+	rebootReq := model.OperationRequest{
+		Operation: "reboot",
+		Params: map[string]interface{}{
+			"mac_list": macList,
+		},
+	}
+
+	jsonBody, err := json.Marshal(rebootReq)
+	if err != nil {
+		return err
+	}
+
+	args := url.Values{}
+	args.Add("form", "system")
+
+	var res model.RebootResponse
+	return c.encryptPost(ctx, fmt.Sprintf(";stok=%s/admin/device", c.stok), args, jsonBody, false, &res)
 }
 
 func (c *HTTPClient) getPasswordKey(ctx context.Context) (*rsa.PublicKey, error) {

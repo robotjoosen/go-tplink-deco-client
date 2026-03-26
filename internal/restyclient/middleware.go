@@ -3,17 +3,13 @@ package restyclient
 import (
 	"crypto/rsa"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/robotjoosen/go-tplink-deco-client/internal/crypto"
 )
-
-type BodyAware interface {
-	Body() []byte
-	SetBody(body []byte) interface{}
-}
 
 type DecoMiddleware struct {
 	stok     string
@@ -23,13 +19,15 @@ type DecoMiddleware struct {
 	rsa      *rsa.PublicKey
 }
 
-func NewDecoMiddleware(aes *crypto.AESKey, hash string, rsa *rsa.PublicKey, sequence uint) *DecoMiddleware {
-	return &DecoMiddleware{
-		aes:      aes,
-		hash:     hash,
-		rsa:      rsa,
-		sequence: sequence,
-	}
+func NewDecoMiddleware() *DecoMiddleware {
+	return &DecoMiddleware{}
+}
+
+func (c *DecoMiddleware) Initialize(aes *crypto.AESKey, hash string, rsa *rsa.PublicKey, sequence uint) {
+	c.aes = aes
+	c.hash = hash
+	c.rsa = rsa
+	c.sequence = sequence
 }
 
 func (c *DecoMiddleware) SetStok(stok string) {
@@ -42,7 +40,7 @@ func (c *DecoMiddleware) ParseRequest(_ *resty.Client, request *resty.Request) e
 		return err
 	}
 
-	request.URL = "/;stok=" + c.stok + request.URL
+	request.URL = "/;stok=" + c.stok + "/" + request.URL
 	request.SetBody(body)
 	request.SetHeader("Content-Type", "application/json")
 
@@ -50,6 +48,10 @@ func (c *DecoMiddleware) ParseRequest(_ *resty.Client, request *resty.Request) e
 }
 
 func (c *DecoMiddleware) ParseResponse(_ *resty.Client, response *resty.Response) error {
+	if c.stok == "" {
+		return nil
+	}
+
 	body, err := c.decrypt(response.Body())
 	if err != nil {
 		return err
@@ -78,6 +80,10 @@ func (c *DecoMiddleware) decrypt(data []byte) ([]byte, error) {
 }
 
 func (c *DecoMiddleware) encrypt(data interface{}) (string, error) {
+	if c.aes == nil || c.rsa == nil {
+		return "", errors.New("middleware not initialized")
+	}
+
 	body, err := json.Marshal(data)
 	if err != nil {
 		return "", err
